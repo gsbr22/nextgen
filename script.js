@@ -69,7 +69,29 @@ document.addEventListener('DOMContentLoaded', function() {
             const name = document.getElementById('name').value;
             const email = document.getElementById('email').value;
             const message = document.getElementById('message').value;
-            
+            // Fonction pour afficher une notification
+function showNotification(message) {
+    const notification = document.createElement('div');
+    notification.className = 'notification';
+    notification.textContent = message;
+    document.body.appendChild(notification);
+    
+    // Animation d'apparition
+    setTimeout(() => {
+        notification.style.opacity = '1';
+        notification.style.transform = 'translateY(0)';
+    }, 100);
+    
+    // Cliquer n'importe où pour fermer
+    document.addEventListener('click', function closeNotification() {
+        notification.style.opacity = '0';
+        notification.style.transform = 'translateY(-20px)';
+        setTimeout(() => {
+            document.body.removeChild(notification);
+            document.removeEventListener('click', closeNotification);
+        }, 300);
+    }, { once: true });
+}
             // Envoyer les données à Firebase
             database.ref('contacts').push({
                 name: name,
