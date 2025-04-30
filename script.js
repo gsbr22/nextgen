@@ -13,6 +13,31 @@ firebase.initializeApp(firebaseConfig);
 const auth = firebase.auth();
 const database = firebase.database();
 
+// Fonction pour afficher une notification
+function showNotification(message, isSuccess = true) {
+    const notification = document.createElement('div');
+    notification.className = 'notification';
+    notification.style.backgroundColor = isSuccess ? '#4CAF50' : '#f44336';
+    notification.textContent = message;
+    document.body.appendChild(notification);
+    
+    // Animation d'apparition
+    setTimeout(() => {
+        notification.style.opacity = '1';
+        notification.style.transform = 'translateY(0)';
+    }, 100);
+    
+    // Cliquer n'importe où pour fermer
+    document.addEventListener('click', function closeNotification() {
+        notification.style.opacity = '0';
+        notification.style.transform = 'translateY(-20px)';
+        setTimeout(() => {
+            document.body.removeChild(notification);
+            document.removeEventListener('click', closeNotification);
+        }, 300);
+    }, { once: true });
+}
+
 // Gestion des modales
 document.addEventListener('DOMContentLoaded', function() {
     const loginLink = document.getElementById('loginLink');
@@ -22,10 +47,15 @@ document.addEventListener('DOMContentLoaded', function() {
     const showRegister = document.getElementById('showRegister');
     const showLogin = document.getElementById('showLogin');
 
+    // Gestion de l'affichage des modales
     if (loginLink) {
         loginLink.addEventListener('click', function(e) {
             e.preventDefault();
-            loginModal.style.display = 'block';
+            if (auth.currentUser) {
+                window.location.href = 'moncompte.html';
+            } else {
+                loginModal.style.display = 'block';
+            }
         });
     }
 
@@ -69,29 +99,7 @@ document.addEventListener('DOMContentLoaded', function() {
             const name = document.getElementById('name').value;
             const email = document.getElementById('email').value;
             const message = document.getElementById('message').value;
-            // Fonction pour afficher une notification
-function showNotification(message) {
-    const notification = document.createElement('div');
-    notification.className = 'notification';
-    notification.textContent = message;
-    document.body.appendChild(notification);
-    
-    // Animation d'apparition
-    setTimeout(() => {
-        notification.style.opacity = '1';
-        notification.style.transform = 'translateY(0)';
-    }, 100);
-    
-    // Cliquer n'importe où pour fermer
-    document.addEventListener('click', function closeNotification() {
-        notification.style.opacity = '0';
-        notification.style.transform = 'translateY(-20px)';
-        setTimeout(() => {
-            document.body.removeChild(notification);
-            document.removeEventListener('click', closeNotification);
-        }, 300);
-    }, { once: true });
-}
+            
             // Envoyer les données à Firebase
             database.ref('contacts').push({
                 name: name,
@@ -99,11 +107,11 @@ function showNotification(message) {
                 message: message,
                 timestamp: firebase.database.ServerValue.TIMESTAMP
             }).then(() => {
-                alert('Message envoyé avec succès !');
+                showNotification('Message envoyé avec succès !');
                 contactForm.reset();
             }).catch(error => {
+                showNotification('Une erreur est survenue. Veuillez réessayer.', false);
                 console.error('Erreur:', error);
-                alert('Une erreur est survenue. Veuillez réessayer.');
             });
         });
     }
@@ -118,14 +126,18 @@ function showNotification(message) {
             
             auth.signInWithEmailAndPassword(email, password)
                 .then((userCredential) => {
-                    // Connexion réussie
-                    alert('Connexion réussie !');
+                    showNotification('Connexion réussie !');
                     loginModal.style.display = 'none';
                     loginForm.reset();
+                    
+                    // Mettre à jour le lien de connexion
+                    if (loginLink) {
+                        loginLink.textContent = 'Mon compte';
+                    }
                 })
                 .catch((error) => {
                     console.error('Erreur de connexion:', error);
-                    alert('Erreur de connexion: ' + error.message);
+                    showNotification('Erreur de connexion: ' + error.message, false);
                 });
         });
     }
@@ -141,13 +153,9 @@ function showNotification(message) {
             const confirmPassword = document.getElementById('registerConfirmPassword').value;
             
             if (password !== confirmPassword) {
-                alert('Les mots de passe ne correspondent pas.');
+                showNotification('Les mots de passe ne correspondent pas.', false);
                 return;
             }
-            // Remplacer l'alerte existante par :
-showNotification('Inscription réussie ! Vous êtes maintenant connecté.');
-registerModal.style.display = 'none';
-registerForm.reset();
             
             auth.createUserWithEmailAndPassword(email, password)
                 .then((userCredential) => {
@@ -159,28 +167,36 @@ registerForm.reset();
                     });
                 })
                 .then(() => {
-                    alert('Inscription réussie ! Vous êtes maintenant connecté.');
+                    showNotification('Inscription réussie ! Vous êtes maintenant connecté.');
                     registerModal.style.display = 'none';
                     registerForm.reset();
+                    
+                    // Mettre à jour le lien de connexion
+                    if (loginLink) {
+                        loginLink.textContent = 'Mon compte';
+                    }
                 })
                 .catch((error) => {
                     console.error('Erreur d\'inscription:', error);
-                    alert('Erreur d\'inscription: ' + error.message);
+                    showNotification('Erreur d\'inscription: ' + error.message, false);
                 });
         });
     }
 
-    // Vérifier l'état d'authentification
+    // Vérifier l'état d'authentification au chargement
     auth.onAuthStateChanged((user) => {
         if (user) {
             // Utilisateur connecté
             const loginLink = document.getElementById('loginLink');
             if (loginLink) {
                 loginLink.textContent = 'Mon compte';
-                // Vous pouvez ajouter ici un lien vers le tableau de bord utilisateur
             }
         } else {
             // Utilisateur déconnecté
+            const loginLink = document.getElementById('loginLink');
+            if (loginLink) {
+                loginLink.textContent = 'Connexion';
+            }
         }
     });
 });
