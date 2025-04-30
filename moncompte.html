@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mon Compte - NextGen</title>
+    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-auth.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-database.js"></script>
+</head>
+<body>
+    <header>
+        <div class="corner-logo">
+            <img src="nextlogo.png" alt="NextGen Logo">
+        </div>
+        <nav>
+            <ul>
+                <li><a href="index.html">Accueil</a></li>
+                <li><a href="index.html#products">Nos Produits</a></li>
+                <li><a href="index.html#about">À Propos</a></li>
+                <li><a href="index.html#contact">Contact</a></li>
+            </ul>
+        </nav>
+        <div class="center-logo">
+            <img src="nextlogo2.png" alt="NextGen Logo">
+        </div>
+    </header>
+
+    <main class="account-page">
+        <section class="account-info">
+            <h1>Mon Compte</h1>
+            <div id="userDetails" class="user-details">
+                <p>Chargement des informations...</p>
+            </div>
+            <div class="account-actions">
+                <button id="logoutBtn" class="btn">Déconnexion</button>
+                <button id="deleteAccountBtn" class="btn-danger">Supprimer mon compte</button>
+            </div>
+        </section>
+
+        <section class="purchases">
+            <h2>Mes Achats</h2>
+            <div id="purchasesList" class="purchases-list">
+                <p>Vous n'avez pas encore effectué d'achat.</p>
+            </div>
+        </section>
+    </main>
+
+    <footer>
+        <div class="footer-content">
+            <div class="footer-logo">
+                <img src="nextlogo2.png" alt="NextGen Logo">
+            </div>
+            <div class="footer-links">
+                <a href="index.html">Accueil</a>
+                <a href="index.html#products">Produits</a>
+                <a href="index.html#about">À Propos</a>
+                <a href="index.html#contact">Contact</a>
+            </div>
+            <div class="footer-social">
+                <a href="#"><i class="fab fa-facebook"></i></a>
+                <a href="#"><i class="fab fa-twitter"></i></a>
+                <a href="#"><i class="fab fa-instagram"></i></a>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            <p>&copy; 2023 NextGen. Tous droits réservés.</p>
+        </div>
+    </footer>
+
+    <script src="script.js"></script>
+    <script>
+        // Gestion spécifique à la page de compte
+        document.addEventListener('DOMContentLoaded', function() {
+            const auth = firebase.auth();
+            const database = firebase.database();
+            const logoutBtn = document.getElementById('logoutBtn');
+            const deleteAccountBtn = document.getElementById('deleteAccountBtn');
+            const userDetails = document.getElementById('userDetails');
+            const purchasesList = document.getElementById('purchasesList');
+
+            // Vérifier si l'utilisateur est connecté
+            auth.onAuthStateChanged((user) => {
+                if (user) {
+                    // Afficher les informations utilisateur
+                    database.ref('users/' + user.uid).once('value').then((snapshot) => {
+                        const userData = snapshot.val();
+                        userDetails.innerHTML = `
+                            <p><strong>Nom :</strong> ${userData.name || 'Non renseigné'}</p>
+                            <p><strong>Email :</strong> ${user.email}</p>
+                            <p><strong>Membre depuis :</strong> ${new Date(userData.createdAt).toLocaleDateString()}</p>
+                        `;
+                    });
+
+                    // Charger les achats de l'utilisateur
+                    database.ref('purchases/' + user.uid).once('value').then((snapshot) => {
+                        const purchases = snapshot.val();
+                        if (purchases) {
+                            let html = '<div class="purchases-grid">';
+                            Object.entries(purchases).forEach(([key, purchase]) => {
+                                html += `
+                                    <div class="purchase-item">
+                                        <h3>${purchase.productName}</h3>
+                                        <p>Prix: ${purchase.price}€</p>
+                                        <p>Date: ${new Date(purchase.date).toLocaleDateString()}</p>
+                                        <a href="${purchase.downloadLink}" class="btn" target="_blank">Télécharger</a>
+                                    </div>
+                                `;
+                            });
+                            html += '</div>';
+                            purchasesList.innerHTML = html;
+                        }
+                    });
+                } else {
+                    // Rediriger vers la page d'accueil si non connecté
+                    window.location.href = 'index.html';
+                }
+            });
+
+            // Gestion de la déconnexion
+            logoutBtn.addEventListener('click', function() {
+                auth.signOut().then(() => {
+                    window.location.href = 'index.html';
+                });
+            });
+
+            // Gestion de la suppression de compte
+            deleteAccountBtn.addEventListener('click', function() {
+                if (confirm('Êtes-vous sûr de vouloir supprimer votre compte ? Cette action est irréversible.')) {
+                    const user = auth.currentUser;
+                    user.delete().then(() => {
+                        database.ref('users/' + user.uid).remove();
+                        window.location.href = 'index.html';
+                    }).catch((error) => {
+                        console.error('Erreur:', error);
+                        alert('Une erreur est survenue lors de la suppression du compte.');
+                    });
+                }
+            });
+        });
+    </script>
+</body>
+</html>
