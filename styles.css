@@ -459,3 +459,80 @@ footer {
     transition: opacity 0.3s, transform 0.3s;
     pointer-events: none;
 }
+/* Page Compte */
+.account-page {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 2rem;
+}
+
+.user-details {
+    background-color: #f0f4f8;
+    padding: 2rem;
+    border-radius: 8px;
+    margin: 2rem 0;
+}
+
+.user-details p {
+    margin-bottom: 0.5rem;
+}
+
+.account-actions {
+    display: flex;
+    gap: 1rem;
+    margin-top: 2rem;
+}
+
+.btn-danger {
+    background-color: #f44336;
+    color: white;
+}
+
+.btn-danger:hover {
+    background-color: #d32f2f;
+}
+
+.purchases-list {
+    margin-top: 2rem;
+}
+
+.purchases-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    gap: 1.5rem;
+    margin-top: 1rem;
+}
+
+.purchase-item {
+    background-color: white;
+    padding: 1.5rem;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.purchase-item h3 {
+    margin-bottom: 0.5rem;
+    color: #0070ba;
+}
+
+.purchase-item p {
+    margin-bottom: 0.5rem;
+    color: #666;
+}
+
+/* Notifications */
+.notification {
+    position: fixed;
+    top: 20px;
+    left: 50%;
+    transform: translateX(-50%) translateY(-20px);
+    background-color: #4CAF50;
+    color: white;
+    padding: 15px 25px;
+    border-radius: 4px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    z-index: 1001;
+    opacity: 0;
+    transition: opacity 0.3s, transform 0.3s;
+    pointer-events: none;
+}
