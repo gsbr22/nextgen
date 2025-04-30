@@ -29,8 +29,15 @@
         <section class="account-info">
             <h1>Mon Compte</h1>
             <div id="userDetails" class="user-details">
-                <p>Chargement des informations...</p>
-            </div>
+    <div class="user-info">
+        <div class="user-icon">
+            <i class="fas fa-user-circle"></i>
+        </div>
+        <div class="user-email" id="userEmail">
+            Chargement des informations...
+        </div>
+    </div>
+</div>
             <div class="account-actions">
                 <button id="logoutBtn" class="btn">Déconnexion</button>
                 <button id="deleteAccountBtn" class="btn-danger">Supprimer mon compte</button>
@@ -137,6 +144,35 @@
                 }
             });
         });
+        auth.onAuthStateChanged((user) => {
+    if (user) {
+        // Afficher l'email de l'utilisateur
+        document.getElementById('userEmail').textContent = user.email;
+        
+        // Afficher les autres informations utilisateur si disponibles
+        database.ref('users/' + user.uid).once('value').then((snapshot) => {
+            const userData = snapshot.val();
+            const userDetails = document.getElementById('userDetails');
+            
+            userDetails.innerHTML = `
+                <div class="user-info">
+                    <div class="user-icon">
+                        <i class="fas fa-user-circle"></i>
+                    </div>
+                    <div class="user-email">
+                        ${user.email}
+                    </div>
+                </div>
+                <p><i class="fas fa-user"></i> Nom : ${userData.name || 'Non renseigné'}</p>
+                <p><i class="fas fa-calendar-alt"></i> Membre depuis : ${new Date(userData.createdAt).toLocaleDateString('fr-FR')}</p>
+            `;
+        });
+
+        // ... reste du code ...
+    } else {
+        window.location.href = 'index.html';
+    }
+});
     </script>
 </body>
 </html>
