@@ -144,6 +144,10 @@ function showNotification(message) {
                 alert('Les mots de passe ne correspondent pas.');
                 return;
             }
+            // Remplacer l'alerte existante par :
+showNotification('Inscription réussie ! Vous êtes maintenant connecté.');
+registerModal.style.display = 'none';
+registerForm.reset();
             
             auth.createUserWithEmailAndPassword(email, password)
                 .then((userCredential) => {
