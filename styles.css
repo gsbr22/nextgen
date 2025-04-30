@@ -46,17 +46,6 @@ header {
     width: auto;
 }
 
-.center-logo {
-    position: absolute;
-    left: 50%;
-    transform: translateX(-50%);
-}
-
-.center-logo img {
-    height: 70px;
-    width: auto;
-}
-
 nav ul {
     display: flex;
     gap: 2rem;
