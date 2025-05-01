@@ -113,7 +113,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 timestamp: firebase.database.ServerValue.TIMESTAMP
             }).then(() => {
                 // Envoi du mail via EmailJS
-                emailjs.send('default_service', 'template_nu2qbqm', {
+                emailjs.send("service_vy983pq","template_nu2qbqm"), {
                     from_name: name,
                     from_email: email,
                     message: message,
