@@ -77,14 +77,23 @@
         </section>
 
         <section id="contact" class="contact">
-            <h2>Contactez-nous</h2>
-            <form id="contactForm">
-                <input type="text" id="name" placeholder="Votre nom" required>
-                <input type="email" id="email" placeholder="Votre email" required>
-                <textarea id="message" placeholder="Votre message" required></textarea>
-                <button type="submit" class="btn">Envoyer</button>
-            </form>
-        </section>
+    <h2>Contactez-nous</h2>
+    <form id="contactForm">
+        <div class="field">
+            <label for="name">Nom</label>
+            <input type="text" name="name" id="name" required>
+        </div>
+        <div class="field">
+            <label for="email">Email</label>
+            <input type="email" name="email" id="email" required>
+        </div>
+        <div class="field">
+            <label for="message">Message</label>
+            <textarea name="message" id="message" required></textarea>
+        </div>
+        <input type="submit" id="button" value="Envoyer le message" class="btn">
+    </form>
+</section>
     </main>
 
     <footer>
