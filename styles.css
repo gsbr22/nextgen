@@ -701,3 +701,52 @@ footer {
     color: #0070ba;
     text-align: center;
 }
+/* Styles spécifiques pour le formulaire de contact */
+.contact .field {
+    margin-bottom: 1.5rem;
+}
+
+.contact .field label {
+    display: block;
+    font-size: 0.9rem;
+    color: #555;
+    margin-bottom: 0.3rem;
+    font-weight: 500;
+}
+
+.contact .field input,
+.contact .field textarea {
+    display: block;
+    width: 100%;
+    padding: 0.75rem;
+    font-size: 1rem;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    transition: border-color 0.3s;
+}
+
+.contact .field input:focus,
+.contact .field textarea:focus {
+    outline: none;
+    border-color: #0070ba;
+}
+
+.contact .field textarea {
+    min-height: 150px;
+    resize: vertical;
+}
+
+.contact #button {
+    background-color: #0070ba;
+    color: white;
+    border: none;
+    padding: 0.75rem 2rem;
+    font-size: 1rem;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+}
+
+.contact #button:hover {
+    background-color: #005a9c;
+}
