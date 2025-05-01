@@ -14,9 +14,7 @@ const auth = firebase.auth();
 const database = firebase.database();
 
 // Initialisation EmailJS
-(function() {
-    emailjs.init('LDYR_83BF5t-wB9h2');
-})();
+emailjs.init('LDYR_83BF5t-wB9h2');
 
 // Fonction pour afficher une notification
 function showNotification(message, isSuccess = true) {
@@ -95,26 +93,52 @@ document.addEventListener('DOMContentLoaded', function() {
             registerModal.style.display = 'none';
         }
     });
-const btn = document.getElementById("button")
 
-document.getElementById("form").addEventListener("submit", function (event) {
-  event.preventDefault()
-
-  btn.value = "Sending..."
-
-  const serviceID = "default_service"
-  const templateID = "template_nu2qbqm"
-
-  emailjs.sendForm(serviceID, templateID, this).then(
-    () => {
-      btn.value = "Send Email"
-      alert("Sent!")
-    },
-    (err) => {
-      btn.value = "Send Email"
-      alert(JSON.stringify(err))
-    },
-  )
+    // Gestion du formulaire de contact
+    const contactForm = document.getElementById('contactForm');
+    const contactBtn = document.getElementById('button');
+    
+    if (contactForm) {
+        contactForm.addEventListener('submit', function(event) {
+            event.preventDefault();
+            
+            // Changement du texte du bouton
+            contactBtn.value = "Envoi en cours...";
+            contactBtn.disabled = true;
+            
+            // 1. Enregistrement dans Firebase
+            const formData = {
+                name: document.getElementById('name').value,
+                email: document.getElementById('email').value,
+                message: document.getElementById('message').value,
+                timestamp: firebase.database.ServerValue.TIMESTAMP
+            };
+            
+            database.ref('contacts').push(formData)
+                .then(() => {
+                    // 2. Envoi par EmailJS
+                    emailjs.sendForm('default_service', 'template_nu2qbqm', contactForm)
+                        .then(() => {
+                            showNotification('Message envoyé avec succès !');
+                            contactForm.reset();
+                        })
+                        .catch((err) => {
+                            console.error('Erreur EmailJS:', err);
+                            showNotification("Erreur lors de l'envoi de l'email", false);
+                        })
+                        .finally(() => {
+                            contactBtn.value = "Envoyer le message";
+                            contactBtn.disabled = false;
+                        });
+                })
+                .catch(error => {
+                    console.error('Erreur Firebase:', error);
+                    showNotification('Erreur lors de la sauvegarde', false);
+                    contactBtn.value = "Envoyer le message";
+                    contactBtn.disabled = false;
+                });
+        });
+    }
 
     // Gestion du formulaire de connexion
     const loginForm = document.getElementById('loginForm');
