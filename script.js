@@ -13,6 +13,11 @@ firebase.initializeApp(firebaseConfig);
 const auth = firebase.auth();
 const database = firebase.database();
 
+// Initialisation EmailJS
+(function() {
+    emailjs.init('LDYR_83BF5t-wB9h2');
+})();
+
 // Fonction pour afficher une notification
 function showNotification(message, isSuccess = true) {
     const notification = document.createElement('div');
@@ -107,8 +112,19 @@ document.addEventListener('DOMContentLoaded', function() {
                 message: message,
                 timestamp: firebase.database.ServerValue.TIMESTAMP
             }).then(() => {
-                showNotification('Message envoyé avec succès !');
-                contactForm.reset();
+                // Envoi du mail via EmailJS
+                emailjs.send('default_service', 'template_votre_template_id', {
+                    from_name: name,
+                    from_email: email,
+                    message: message,
+                    to_email: "nextgencorp185@gmail.com"
+                }).then(() => {
+                    showNotification('Message envoyé avec succès !');
+                    contactForm.reset();
+                }, (error) => {
+                    console.error('Erreur EmailJS:', error);
+                    showNotification('Message sauvegardé mais erreur d\'envoi par email', false);
+                });
             }).catch(error => {
                 showNotification('Une erreur est survenue. Veuillez réessayer.', false);
                 console.error('Erreur:', error);
