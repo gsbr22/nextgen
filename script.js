@@ -95,42 +95,26 @@ document.addEventListener('DOMContentLoaded', function() {
             registerModal.style.display = 'none';
         }
     });
+const btn = document.getElementById("button")
 
-    // Gestion du formulaire de contact
-    const contactForm = document.getElementById('contactForm');
-    if (contactForm) {
-        contactForm.addEventListener('submit', function(e) {
-            e.preventDefault();
-            const name = document.getElementById('name').value;
-            const email = document.getElementById('email').value;
-            const message = document.getElementById('message').value;
-            
-            // Envoyer les données à Firebase
-            database.ref('contacts').push({
-                name: name,
-                email: email,
-                message: message,
-                timestamp: firebase.database.ServerValue.TIMESTAMP
-            }).then(() => {
-                // Envoi du mail via EmailJS
-                emailjs.send("service_vy983pq","template_nu2qbqm"), {
-                    from_name: name,
-                    from_email: email,
-                    message: message,
-                    to_email: "nextgencorp185@gmail.com"
-                }).then(() => {
-                    showNotification('Message envoyé avec succès !');
-                    contactForm.reset();
-                }, (error) => {
-                    console.error('Erreur EmailJS:', error);
-                    showNotification('Message sauvegardé mais erreur d\'envoi par email', false);
-                });
-            }).catch(error => {
-                showNotification('Une erreur est survenue. Veuillez réessayer.', false);
-                console.error('Erreur:', error);
-            });
-        });
-    }
+document.getElementById("form").addEventListener("submit", function (event) {
+  event.preventDefault()
+
+  btn.value = "Sending..."
+
+  const serviceID = "default_service"
+  const templateID = "template_nu2qbqm"
+
+  emailjs.sendForm(serviceID, templateID, this).then(
+    () => {
+      btn.value = "Send Email"
+      alert("Sent!")
+    },
+    (err) => {
+      btn.value = "Send Email"
+      alert(JSON.stringify(err))
+    },
+  )
 
     // Gestion du formulaire de connexion
     const loginForm = document.getElementById('loginForm');
