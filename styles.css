@@ -750,13 +750,3 @@ footer {
 .contact #button:hover {
     background-color: #005a9c;
 }
-
-/* Ajout des styles d'animation pour les champs de formulaire */
-input:focus + label {
-    transform: translateY(-25px);
-    color: #0051ff;
-}
-
-input:focus {
-    border-color: #0051ff;
-}
