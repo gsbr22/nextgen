@@ -8,41 +8,30 @@ const firebaseConfig = {
     appId: "1:123644267529:web:5409efdf896971c655bcd8"
 };
 
-// Initialiser Firebase
 firebase.initializeApp(firebaseConfig);
 const auth = firebase.auth();
 const database = firebase.database();
-
-// Initialisation EmailJS
 emailjs.init('LDYR_83BF5t-wB9h2');
 
-// Fonction pour afficher une notification
 function showNotification(message, isSuccess = true) {
     const notification = document.createElement('div');
-    notification.className = 'notification';
-    notification.style.backgroundColor = isSuccess ? '#4CAF50' : '#f44336';
+    notification.className = `notification ${isSuccess ? '' : 'error'}`;
     notification.textContent = message;
     document.body.appendChild(notification);
     
-    // Animation d'apparition
     setTimeout(() => {
         notification.style.opacity = '1';
         notification.style.transform = 'translateY(0)';
     }, 100);
     
-    // Cliquer n'importe où pour fermer
-    document.addEventListener('click', function closeNotification() {
+    setTimeout(() => {
         notification.style.opacity = '0';
-        notification.style.transform = 'translateY(-20px)';
-        setTimeout(() => {
-            document.body.removeChild(notification);
-            document.removeEventListener('click', closeNotification);
-        }, 300);
-    }, { once: true });
+        setTimeout(() => document.body.removeChild(notification), 300);
+    }, 3000);
 }
 
-// Gestion des modales
 document.addEventListener('DOMContentLoaded', function() {
+    // Gestion des modales
     const loginLink = document.getElementById('loginLink');
     const loginModal = document.getElementById('loginModal');
     const registerModal = document.getElementById('registerModal');
@@ -50,7 +39,6 @@ document.addEventListener('DOMContentLoaded', function() {
     const showRegister = document.getElementById('showRegister');
     const showLogin = document.getElementById('showLogin');
 
-    // Gestion de l'affichage des modales
     if (loginLink) {
         loginLink.addEventListener('click', function(e) {
             e.preventDefault();
@@ -62,180 +50,123 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     }
 
-    if (showRegister) {
-        showRegister.addEventListener('click', function(e) {
-            e.preventDefault();
-            loginModal.style.display = 'none';
-            registerModal.style.display = 'block';
-        });
-    }
-
-    if (showLogin) {
-        showLogin.addEventListener('click', function(e) {
-            e.preventDefault();
-            registerModal.style.display = 'none';
-            loginModal.style.display = 'block';
-        });
-    }
-
-    closeButtons.forEach(button => {
-        button.addEventListener('click', function() {
-            loginModal.style.display = 'none';
-            registerModal.style.display = 'none';
-        });
+    if (showRegister) showRegister.addEventListener('click', (e) => {
+        e.preventDefault();
+        loginModal.style.display = 'none';
+        registerModal.style.display = 'block';
     });
 
-    window.addEventListener('click', function(e) {
-        if (e.target === loginModal) {
-            loginModal.style.display = 'none';
-        }
-        if (e.target === registerModal) {
-            registerModal.style.display = 'none';
-        }
+    if (showLogin) showLogin.addEventListener('click', (e) => {
+        e.preventDefault();
+        registerModal.style.display = 'none';
+        loginModal.style.display = 'block';
     });
 
-    // Gestion du formulaire de contact
+    closeButtons.forEach(btn => btn.addEventListener('click', () => {
+        loginModal.style.display = 'none';
+        registerModal.style.display = 'none';
+    }));
+
+    window.addEventListener('click', (e) => {
+        if (e.target === loginModal) loginModal.style.display = 'none';
+        if (e.target === registerModal) registerModal.style.display = 'none';
+    });
+
+    // Formulaire de contact
     const contactForm = document.getElementById('contactForm');
-    const contactBtn = document.getElementById('button');
-    
     if (contactForm) {
-        contactForm.addEventListener('submit', function(event) {
-            event.preventDefault();
+        contactForm.addEventListener('submit', function(e) {
+            e.preventDefault();
+            const button = document.getElementById('button');
+            button.disabled = true;
+            button.value = "Envoi en cours...";
             
-            // Changement du texte du bouton
-            contactBtn.value = "Envoi en cours...";
-            contactBtn.disabled = true;
-            
-            // 1. Enregistrement dans Firebase
-            const formData = {
-                name: document.getElementById('name').value,
-                email: document.getElementById('email').value,
-                message: document.getElementById('message').value,
+            // Enregistrement dans Firebase
+            database.ref('contacts').push({
+                name: contactForm.name.value,
+                email: contactForm.email.value,
+                message: contactForm.message.value,
                 timestamp: firebase.database.ServerValue.TIMESTAMP
-            };
-            
-            database.ref('contacts').push(formData)
-                .then(() => {
-                    // 2. Envoi par EmailJS
-                    emailjs.sendForm('default_service', 'template_nu2qbqm', contactForm)
-                        .then(() => {
-                            showNotification('Message envoyé avec succès !');
-                            contactForm.reset();
-                        })
-                        .catch((err) => {
-                            console.error('Erreur EmailJS:', err);
-                            showNotification("Erreur lors de l'envoi de l'email", false);
-                        })
-                        .finally(() => {
-                            contactBtn.value = "Envoyer le message";
-                            contactBtn.disabled = false;
-                        });
-                })
-                .catch(error => {
-                    console.error('Erreur Firebase:', error);
-                    showNotification('Erreur lors de la sauvegarde', false);
-                    contactBtn.value = "Envoyer le message";
-                    contactBtn.disabled = false;
-                });
+            }).then(() => {
+                // Envoi par EmailJS
+                return emailjs.sendForm('default_service', 'template_nu2qbqm', contactForm);
+            }).then(() => {
+                showNotification('Message envoyé avec succès !');
+                contactForm.reset();
+            }).catch(error => {
+                console.error('Erreur:', error);
+                showNotification("Erreur lors de l'envoi du message", false);
+            }).finally(() => {
+                button.disabled = false;
+                button.value = "Envoyer le message";
+            });
         });
     }
 
-    // Gestion du formulaire de connexion
+    // Connexion
     const loginForm = document.getElementById('loginForm');
     if (loginForm) {
         loginForm.addEventListener('submit', function(e) {
             e.preventDefault();
-            const email = document.getElementById('loginEmail').value;
-            const password = document.getElementById('loginPassword').value;
-            
-            auth.signInWithEmailAndPassword(email, password)
-                .then((userCredential) => {
-                    showNotification('Connexion réussie !');
-                    loginModal.style.display = 'none';
-                    loginForm.reset();
-                    
-                    // Mettre à jour le lien de connexion
-                    if (loginLink) {
-                        loginLink.textContent = 'Mon compte';
-                    }
-                })
-                .catch((error) => {
-                    console.error('Erreur de connexion:', error);
-                    showNotification('Erreur de connexion: ' + error.message, false);
-                });
+            auth.signInWithEmailAndPassword(
+                loginForm.loginEmail.value, 
+                loginForm.loginPassword.value
+            ).then(() => {
+                showNotification('Connexion réussie !');
+                loginModal.style.display = 'none';
+                if (loginLink) loginLink.textContent = 'Mon compte';
+            }).catch(error => {
+                showNotification('Erreur: ' + error.message, false);
+            });
         });
     }
 
-    // Gestion du formulaire d'inscription
+    // Inscription
     const registerForm = document.getElementById('registerForm');
     if (registerForm) {
         registerForm.addEventListener('submit', function(e) {
             e.preventDefault();
-            const name = document.getElementById('registerName').value;
-            const email = document.getElementById('registerEmail').value;
-            const password = document.getElementById('registerPassword').value;
-            const confirmPassword = document.getElementById('registerConfirmPassword').value;
-            
-            if (password !== confirmPassword) {
-                showNotification('Les mots de passe ne correspondent pas.', false);
+            if (registerForm.registerPassword.value !== registerForm.registerConfirmPassword.value) {
+                showNotification('Les mots de passe ne correspondent pas', false);
                 return;
             }
             
-            auth.createUserWithEmailAndPassword(email, password)
-                .then((userCredential) => {
-                    // Enregistrement des données utilisateur supplémentaires
-                    return database.ref('users/' + userCredential.user.uid).set({
-                        name: name,
-                        email: email,
-                        createdAt: firebase.database.ServerValue.TIMESTAMP
-                    });
-                })
-                .then(() => {
-                    showNotification('Inscription réussie ! Vous êtes maintenant connecté.');
-                    registerModal.style.display = 'none';
-                    registerForm.reset();
-                    
-                    // Mettre à jour le lien de connexion
-                    if (loginLink) {
-                        loginLink.textContent = 'Mon compte';
-                    }
-                })
-                .catch((error) => {
-                    console.error('Erreur d\'inscription:', error);
-                    showNotification('Erreur d\'inscription: ' + error.message, false);
+            auth.createUserWithEmailAndPassword(
+                registerForm.registerEmail.value,
+                registerForm.registerPassword.value
+            ).then((userCredential) => {
+                return database.ref('users/' + userCredential.user.uid).set({
+                    name: registerForm.registerName.value,
+                    email: registerForm.registerEmail.value,
+                    createdAt: firebase.database.ServerValue.TIMESTAMP
                 });
+            }).then(() => {
+                showNotification('Inscription réussie !');
+                registerModal.style.display = 'none';
+                if (loginLink) loginLink.textContent = 'Mon compte';
+            }).catch(error => {
+                showNotification('Erreur: ' + error.message, false);
+            });
         });
     }
 
-    // Vérifier l'état d'authentification au chargement
-    auth.onAuthStateChanged((user) => {
-        if (user) {
-            // Utilisateur connecté
-            const loginLink = document.getElementById('loginLink');
-            if (loginLink) {
-                loginLink.textContent = 'Mon compte';
-            }
-        } else {
-            // Utilisateur déconnecté
-            const loginLink = document.getElementById('loginLink');
-            if (loginLink) {
-                loginLink.textContent = 'Connexion';
-            }
+    // Vérification de l'état d'authentification
+    auth.onAuthStateChanged(user => {
+        const loginLink = document.getElementById('loginLink');
+        if (loginLink) {
+            loginLink.textContent = user ? 'Mon compte' : 'Connexion';
         }
     });
-});
 
-// Navigation fluide pour les ancres
-document.querySelectorAll('a[href^="#"]').forEach(anchor => {
-    anchor.addEventListener('click', function(e) {
-        if (this.getAttribute('href') !== '#') {
-            e.preventDefault();
-            const target = document.querySelector(this.getAttribute('href'));
-            if (target) {
-                target.scrollIntoView({
+    // Navigation fluide
+    document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+        anchor.addEventListener('click', function(e) {
+            if (this.getAttribute('href') !== '#') {
+                e.preventDefault();
+                document.querySelector(this.getAttribute('href'))?.scrollIntoView({
                     behavior: 'smooth'
                 });
             }
-        }
+        });
     });
 });
