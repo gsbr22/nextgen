@@ -6,33 +6,29 @@
     <title>NextGen - eBooks Professionnels</title>
     <link rel="stylesheet" href="styles.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
-    <link rel="website icon" type="png" src="/favicon-32x32.png>
+    <link rel="icon" type="image/png" href="favicon-32x32.png">
     <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
     <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-auth.js"></script>
     <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-database.js"></script>
-    <!-- ... autres balises meta ... -->
     <script src="https://cdn.jsdelivr.net/npm/emailjs-com@3/dist/email.min.js"></script>
-    <script>
-    emailjs.init('LDYR_83BF5t-wB9h2');
-</script>
 </head>
 <body>
     <header>
-    <div class="corner-logo">
-        <img src="nextlogo.png" alt="NextGen Logo">
-    </div>
-    <nav>
-        <ul>
-            <li><a href="#home">Accueil</a></li>
-            <li><a href="#products">Nos Produits</a></li>
-            <li><a href="#about">À Propos</a></li>
-            <li><a href="#contact">Contact</a></li>
-        </ul>
-    </nav>
-    <div class="header-actions">
-        <a href="#" id="loginModal" class="login-btn">Connexion</a>
-    </div>
-</header>
+        <div class="corner-logo">
+            <img src="nextlogo.png" alt="NextGen Logo">
+        </div>
+        <nav>
+            <ul>
+                <li><a href="#home">Accueil</a></li>
+                <li><a href="#products">Nos Produits</a></li>
+                <li><a href="#about">À Propos</a></li>
+                <li><a href="#contact">Contact</a></li>
+            </ul>
+        </nav>
+        <div class="header-actions">
+            <a href="#" id="loginLink" class="login-btn">Connexion</a>
+        </div>
+    </header>
     
     <main>
         <section id="home" class="hero">
@@ -50,7 +46,7 @@
                     <p class="price">16,99€</p>
                     <p>Un guide exhaustif pour maîtriser tous les aspects du football moderne.</p>
                     <form action="https://www.paypal.com/ncp/payment/Y8ZWVRJJHNQZ6" method="post" target="_blank">
-                        <input class="pp-Y8ZWVRJJHNQZ6" type="submit" value="Acheter" />
+                        <input class="pp-Y8ZWVRJJHNQZ6" type="submit" value="Acheter">
                     </form>
                     <a href="guide-football.html" class="btn-details">Plus de détails</a>
                 </div>
@@ -71,23 +67,23 @@
         </section>
 
         <section id="contact" class="contact">
-    <h2>Contactez-nous</h2>
-    <form id="contactForm">
-        <div class="field">
-            <label for="name">Nom</label>
-            <input type="text" name="name" id="name" required>
-        </div>
-        <div class="field">
-            <label for="email">Email</label>
-            <input type="email" name="email" id="email" required>
-        </div>
-        <div class="field">
-            <label for="message">Message</label>
-            <textarea name="message" id="message" required></textarea>
-        </div>
-        <input type="submit" id="button" value="Envoyer le message" class="btn">
-    </form>
-</section>
+            <h2>Contactez-nous</h2>
+            <form id="contactForm">
+                <div class="field">
+                    <label for="name">Nom</label>
+                    <input type="text" name="name" id="name" required>
+                </div>
+                <div class="field">
+                    <label for="email">Email</label>
+                    <input type="email" name="email" id="email" required>
+                </div>
+                <div class="field">
+                    <label for="message">Message</label>
+                    <textarea name="message" id="message" required></textarea>
+                </div>
+                <input type="submit" id="button" value="Envoyer le message" class="btn">
+            </form>
+        </section>
     </main>
 
     <footer>
@@ -111,37 +107,37 @@
         <div class="footer-bottom">
             <p>&copy; 2025 NextGen. Tous droits réservés.</p>
         </div>
-
-        <!-- Login Modal -->
-        <div id="loginModal" class="modal">
-            <div class="modal-content">
-                <span class="close">&times;</span>
-                <h2>Connexion</h2>
-                <form id="loginForm">
-                    <input type="email" id="loginEmail" placeholder="Email" required>
-                    <input type="password" id="loginPassword" placeholder="Mot de passe" required>
-                    <button type="submit" class="btn">Se connecter</button>
-                </form>
-                <p>Pas encore de compte? <a href="#" id="showRegister">S'inscrire</a></p>
-            </div>
-        </div>
-
-        <!-- Register Modal -->
-        <div id="registerModal" class="modal">
-            <div class="modal-content">
-                <span class="close">&times;</span>
-                <h2>Inscription</h2>
-                <form id="registerForm">
-                    <input type="text" id="registerName" placeholder="Nom complet" required>
-                    <input type="email" id="registerEmail" placeholder="Email" required>
-                    <input type="password" id="registerPassword" placeholder="Mot de passe" required>
-                    <input type="password" id="registerConfirmPassword" placeholder="Confirmer mot de passe" required>
-                    <button type="submit" class="btn">S'inscrire</button>
-                </form>
-                <p>Déjà un compte? <a href="#" id="showLogin">Se connecter</a></p>
-            </div>
-        </div>
     </footer>
+
+    <!-- Modales -->
+    <div id="loginModal" class="modal">
+        <div class="modal-content">
+            <span class="close">&times;</span>
+            <h2>Connexion</h2>
+            <form id="loginForm">
+                <input type="email" id="loginEmail" placeholder="Email" required>
+                <input type="password" id="loginPassword" placeholder="Mot de passe" required>
+                <button type="submit" class="btn">Se connecter</button>
+            </form>
+            <p>Pas encore de compte? <a href="#" id="showRegister">S'inscrire</a></p>
+        </div>
+    </div>
+
+    <div id="registerModal" class="modal">
+        <div class="modal-content">
+            <span class="close">&times;</span>
+            <h2>Inscription</h2>
+            <form id="registerForm">
+                <input type="text" id="registerName" placeholder="Nom complet" required>
+                <input type="email" id="registerEmail" placeholder="Email" required>
+                <input type="password" id="registerPassword" placeholder="Mot de passe" required>
+                <input type="password" id="registerConfirmPassword" placeholder="Confirmer mot de passe" required>
+                <button type="submit" class="btn">S'inscrire</button>
+            </form>
+            <p>Déjà un compte? <a href="#" id="showLogin">Se connecter</a></p>
+        </div>
+    </div>
+
     <script src="script.js"></script>
 </body>
 </html>
