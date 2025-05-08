@@ -35,19 +35,38 @@
             margin: 2rem auto;
             max-width: 800px;
             background: #f9f9f9;
-            padding: 2rem;
+            padding: 1rem;
             border-radius: 8px;
             box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            height: 600px; /* Hauteur fixe réduite */
+            overflow: hidden;
+        }
+        .questionnaire-iframe {
+            width: 100%;
+            height: 100%;
+            border: none;
+            transform: scale(0.85);
+            transform-origin: top left;
         }
         .purchase-section {
             text-align: center;
-            margin: 3rem 0;
+            margin: 2rem 0;
+            padding: 0 1rem;
         }
         .form-disclaimer {
             font-size: 0.9rem;
             color: #666;
-            margin-top: 1rem;
-            text-align: center;
+            margin: 1rem auto;
+            max-width: 600px;
+        }
+        @media (max-width: 768px) {
+            .questionnaire-container {
+                height: 500px;
+                padding: 0.5rem;
+            }
+            .questionnaire-iframe {
+                transform: scale(0.78);
+            }
         }
     </style>
 </head>
@@ -76,16 +95,15 @@
             </div>
             <div class="product-info">
                 <h1>Histoire Personnalisée pour Votre Enfant</h1>
-                <p class="price">24,99€</p>
+                <p class="price">14,99€</p>
                 <div class="product-description">
-                    <p>Offrez à votre enfant une aventure unique où il devient le héros de l'histoire ! Chaque livre est créé sur mesure selon vos réponses à notre questionnaire.</p>
-                    <h3>Ce que vous recevrez :</h3>
+                    <p>Offrez à votre enfant une aventure unique où il devient le héros de l'histoire !</p>
+                    <h3>Inclus dans votre commande :</h3>
                     <ul>
-                        <li>Une histoire de 20-30 pages avec votre enfant comme personnage principal</li>
-                        <li>Illustrations personnalisées incluant les traits de votre enfant</li>
-                        <li>Format PDF haute qualité compatible avec tous les appareils</li>
-                        <li>Livraison sous 72h après validation du questionnaire</li>
-                        <li>Option cadeau : dédicace personnalisable</li>
+                        <li>Histoire de 15-20 pages personnalisée</li>
+                        <li>Histoire sans illustration incluses</li>
+                        <li>Format PDF haute qualité</li>
+                        <li>Livraison sous 48h</li>
                     </ul>
                 </div>
             </div>
@@ -93,23 +111,20 @@
 
         <section class="questionnaire-section">
             <h2>Personnalisez Votre Histoire</h2>
-            <p class="form-disclaimer">Veuillez remplir ce questionnaire avant de procéder au paiement. Nous utiliserons ces informations pour créer une histoire unique pour votre enfant.</p>
+            <p class="form-disclaimer">Remplissez ce formulaire (5-7 minutes) pour créer une histoire unique</p>
             
             <div class="questionnaire-container">
-                <iframe src="https://docs.google.com/forms/d/e/1FAIpQLSdXD4T4fTbzdsoRA3s5i3R2PrPih-3NKRz04ui39qyNBTwiTQ/viewform?embedded=true" width="100%" height="1000" frameborder="0" marginheight="0" marginwidth="0">Chargement…</iframe>
+                <iframe class="questionnaire-iframe" src="https://docs.google.com/forms/d/e/1FAIpQLSdXD4T4fTbzdsoRA3s5i3R2PrPih-3NKRz04ui39qyNBTwiTQ/viewform?embedded=true&usp=pp_url&entry.1234567890=preview" frameborder="0" marginheight="0" marginwidth="0">Chargement…</iframe>
             </div>
 
             <div class="purchase-section">
-                <h3>Procéder au Paiement</h3>
-                <p>Après avoir soumis le questionnaire, cliquez sur le bouton ci-dessous pour finaliser votre commande.</p>
-                
+                <h3>Finalisez Votre Commande</h3>
                 <form action="https://www.paypal.com/ncp/payment/H3Z46QTR4DFJ4" method="post" target="_blank" style="display:inline-grid;justify-items:center;align-content:start;gap:0.5rem;">
                     <input class="pp-H3Z46QTR4DFJ4" type="submit" value="Acheter Maintenant (14,99€)" />
-                    <img src="https://www.paypalobjects.com/images/Debit_Credit_APM.svg" alt="Méthodes de paiement" />
-                    <section style="font-size: 0.75rem;"> Optimisé par <img src="https://www.paypalobjects.com/paypal-ui/logos/svg/paypal-wordmark-color.svg" alt="paypal" style="height:0.875rem;vertical-align:middle;"/></section>
+                    <img src="https://www.paypalobjects.com/images/Debit_Credit_APM.svg" alt="Méthodes de paiement" style="height:20px;" />
+                    <section style="font-size:0.7rem;">Paiement sécurisé via <img src="https://www.paypalobjects.com/paypal-ui/logos/svg/paypal-wordmark-color.svg" alt="PayPal" style="height:12px;vertical-align:middle;"/></section>
                 </form>
-                
-                <p class="form-disclaimer">Vous recevrez un email de confirmation avec un lien pour télécharger votre histoire personnalisée sous 72h.</p>
+                <p class="form-disclaimer">Vous recevrez votre histoire par email sous 48h après validation</p>
             </div>
         </section>
     </main>
@@ -124,7 +139,6 @@
                 <a href="index.html#products">Produits</a>
                 <a href="index.html#about">À Propos</a>
                 <a href="index.html#contact">Contact</a>
-                <a href="legal.html">Mentions légales & CGV</a>
             </div>
             <div class="footer-social">
                 <a href="https://www.youtube.com/@Nextgencorp_lgdf"><i class="fab fa-youtube"></i></a>
